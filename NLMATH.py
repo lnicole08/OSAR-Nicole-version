@@ -775,8 +775,8 @@ def fallingocc(dfexpt, dfwt):
     
     awt5 = separation(dfexpt, dfwt, "Fall")
     awt5['genre'] = awt5['ExperimentState'] + " " + awt5['Type']
-    awt5['value'] = 0
-    awt5.loc[(awt5['Fall'] >0), ['value']] = 1
+    awt5['binary_fallvalue'] = 0
+    awt5.loc[(awt5['Fall'] >0), ['binary_fallvalue']] = 1
 
     return awt5
 
@@ -868,7 +868,7 @@ def ospeed(dfwt, dfexpt):
     
     return fgt6
 
-def deltaversion(df_sp, genotype, metric):
+def deltaversion_deltag(df_sp, metric, dfnaming):
     import pandas as pd
     import dabest
 
@@ -881,11 +881,30 @@ def deltaversion(df_sp, genotype, metric):
     #dfsp_db2 = dabest.load(data = dfsp_db, x = ['ExperimentState', 'ExperimentState'], paired = "baseline", id_col="index", y = metric, delta2 = True, experiment = "Type", x1_level = ["Dark", "Full"], experiment_label = ["WT","Expt"] )
     dfsp_db2 = dabest.load(data = dfsp_db, x = ["ExperimentState", "Type"], y = metric,  delta2 = True, experiment = "Type",
                             experiment_label = ['WT', 'Expt'], x1_level = ["Dark", "Full"], paired = "baseline", id_col="index" ) #if delta2 = dabest; deltaG = dabest_jck
-    dfstatstest = dfsp_db2.mean_diff.statistical_tests  #change to delta_g if needed
+    dfstatstest = dfsp_db2.hedges_g.statistical_tests  #change to delta_g if needed
         
     if dfstatstest['control'][0].split(" ")[1] == "WT" and dfstatstest['control'][1].split(" ")[1] == "Expt":
-        dfdiff = pd.DataFrame({"MBON": genotype, "WT": round(dfstatstest['difference'][0],3), "Expt": round(dfstatstest['difference'][1],3), "delta_g": round(dfsp_db2.delta_g.delta_delta.difference,3)}, index = [genotype])
+        #dfdiff = pd.DataFrame({"MBON": genotype, "delta_g": round(dfsp_db2.delta_g.delta_delta.difference,3), "g_bca_low": round(dfsp_db2.delta_g.delta_delta.bca_low,3), "g_bca_high": round(dfsp_db2.delta_g.delta_delta.bca_high,3)}, index = [genotype]) 
+        dfdiff = pd.DataFrame({dfnaming +"_bootstrap": dfsp_db2.hedges_g.delta_delta.bootstraps_delta_delta.tolist(), dfnaming +"_deltag": round(dfsp_db2.hedges_g.delta_delta.difference,3)})
+    return (dfdiff)
 
+def deltaversion_meandiff(df_sp,metric, dfnaming): #you run this because since all the binary data is at the same dimension, no standardization is required and empirical delta delta is sufficient
+    import pandas as pd
+    import dabest
+
+    df6 = df_sp[(df_sp['ExperimentState'] != "Recovery") ]
+    name = []
+    if any(df6[metric].isnull()):
+        name = df6[df6[metric].isnull()]['index'].tolist()
+    dfsp_db = df6[~df6['index'].isin(name)]
+
+    dfsp_db2 = dabest.load(data = dfsp_db, x = ["ExperimentState", "Type"], y = metric,  delta2 = True, experiment = "Type",
+                            experiment_label = ['WT', 'Expt'], x1_level = ["Dark", "Full"], paired = "baseline", id_col="index" ) 
+    dfstatstest = dfsp_db2.mean_diff.statistical_tests  
+        
+    if dfstatstest['control'][0].split(" ")[1] == "WT" and dfstatstest['control'][1].split(" ")[1] == "Expt":
+        #dfdiff = pd.DataFrame({"MBON": genotype, "WT": round(dfstatstest['difference'][0],3), "Expt": round(dfstatstest['difference'][1],3), "delta_g": round(dfsp_db2.mean_diff.delta_delta.difference,3), "g_bca_low": round(dfsp_db2.delta_g.delta_delta.bca_low,3), "g_bca_high": round(dfsp_db2.delta_g.delta_delta.bca_high,3)}, index = [ngenotype]) #according to zinan, delta2 == deltag in meanddiff
+        dfdiff = pd.DataFrame({dfnaming +"_bootstrap": dfsp_db2.mean_diff.delta_delta.bootstraps_delta_delta.tolist(), dfnaming +"_meandiff": round(dfsp_db2.mean_diff.delta_delta.difference,3)})
 
     return (dfdiff)
 
@@ -900,7 +919,7 @@ def deltaversion(df_sp, genotype, metric):
 
 #     return df1.reset_index(drop=True)
 
-def positional_arguments(dfexpt, driver):
+def positional_arguments(dfexpt, driver): #obsolete now
     import pandas as pd
     import numpy as np
 
@@ -954,3 +973,27 @@ def positional_arguments(dfexpt, driver):
         ascdesc15 = pd.concat([ascdesc15, ascdesc2], axis=0).reset_index(drop=True)
 
     return ascdesc15
+
+def log2speedratio(df, metric): 
+    import numpy as np
+    import pandas as pd
+    final_df = pd.DataFrame()
+    for phase in ['Expt', 'WT']:
+        pivot_df = pd.DataFrame()
+        pivot_df[metric] = np.log2(df[df['genre'] == 'Full ' + phase][metric].reset_index(drop=True)
+                                        / df[df['genre'] == 'Dark ' + phase][metric].reset_index(drop=True)
+                                        )
+        pivot_df['index'] = df[df['genre'] == 'Dark ' + phase]['index'].reset_index(drop=True)
+        pivot_df['Type'] = phase
+        final_df = pd.concat([final_df, pivot_df[['index', metric, 'Type']]])
+
+    return final_df.reset_index(drop=True)
+
+def singledelta(df, metric, dfnaming):
+    import dabest
+    import pandas as pd
+    
+    df_dbsingle = dabest.load(df, idx = ("Expt", "WT"), y = metric, x = 'Type')
+    df_singledelta = pd.DataFrame({dfnaming +"_bootstrap": df_dbsingle.hedges_g.results.bootstraps[0].tolist(), dfnaming +"_hedgesg": round(float(df_dbsingle.hedges_g.results.difference),3)})
+    return df_singledelta
+
