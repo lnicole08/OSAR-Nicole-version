@@ -8,7 +8,12 @@
       "Bash(python3:*)",
       "Bash(pip show:*)",
       "Bash(findstr:*)",
-      "Bash(where /r \"C:\\\\Users\\\\user\" plotter.py)"
+      "Bash(where /r \"C:\\\\Users\\\\user\" plotter.py)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:acclab.github.io)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }
