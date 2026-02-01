@@ -1,9 +1,0 @@
-mpl.rcParams['svg.fonttype'] = 'none'
-
-strong_corr = pairwise_corr_df[abs(pairwise_corr_df['r']) > 0.8].copy()
-corr_save_path = r"D:\ACC Lab Dropbox\ACC Lab\Nicole Lee\Data Compilation\osar_compiled"
-strong_corr.to_csv(os.path.join(corr_save_path, "light intensity correlations.csv"), index=False)
-
-# Create metric pair short names
-
-    
