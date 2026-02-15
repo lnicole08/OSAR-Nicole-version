@@ -993,7 +993,7 @@ def singledelta(df, metric, dfnaming):
     import dabest
     import pandas as pd
     
-    df_dbsingle = dabest.load(df, idx = ("Expt", "WT"), y = metric, x = 'Type')
+    df_dbsingle = dabest.load(df, idx = ("WT", "Expt"), y = metric, x = 'Type')
     df_singledelta = pd.DataFrame({dfnaming +"_bootstrap": df_dbsingle.hedges_g.results.bootstraps[0].tolist(), dfnaming +"_hedgesg": round(float(df_dbsingle.hedges_g.results.difference),3)})
     return df_singledelta
 
