@@ -13,7 +13,16 @@
       "Bash(ls:*)",
       "Bash(find:*)",
       "WebFetch(domain:acclab.github.io)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(py --version)",
+      "Read(//c/Users/User/AppData/Local/Programs/**)",
+      "Bash(where.exe python *)",
+      "Bash(/c/Users/User/anaconda3/python.exe *)",
+      "Bash(tee \"/c/Users/User/Documents/GitHub/OSARanalysis_NLee/.tmp_compute_out.txt\")",
+      "Bash(tee \"/c/Users/User/Documents/GitHub/OSARanalysis_NLee/.tmp_writeback_out.txt\")",
+      "Bash(mv \"/c/Users/User/ACC Lab Dropbox/ACC Lab/Nicole Lee/DATA/Falling/Falling_ACR/SS46438 x ACR\" \"/c/Users/User/ACC Lab Dropbox/ACC Lab/Nicole Lee/DATA/Falling/Falling_ACR/SS46348 x ACR\")",
+      "Bash(mv \"/c/Users/User/ACC Lab Dropbox/ACC Lab/Nicole Lee/DATA/Falling/Falling_Chrimson2/SS46438 x Chrimson2\" \"/c/Users/User/ACC Lab Dropbox/ACC Lab/Nicole Lee/DATA/Falling/Falling_Chrimson2/SS46348 x Chrimson2\")",
+      "Bash(tee \"/c/Users/User/Documents/GitHub/OSARanalysis_NLee/.tmp_rerun.txt\")"
     ],
     "deny": []
   }
