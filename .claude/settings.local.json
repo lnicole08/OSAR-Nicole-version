@@ -4,7 +4,8 @@
       "Read(//c/Users/user/Documents/GitHub/**)",
       "Bash(python -X utf8 -)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "PowerShell($p=\"D:\\\\ACC Lab Dropbox\\\\ACC Lab\\\\Nicole Lee\\\\Programs\\\\extras\\\\ttf\"; if \\(Test-Path $p\\) { Get-ChildItem $p -File -Name } else { \"NOT FOUND: $p\"; \"--- does Programs exist? ---\"; foreach \\($q in @\\(\"D:\\\\ACC Lab Dropbox\\\\ACC Lab\\\\Nicole Lee\\\\Programs\",\"D:\\\\ACC Lab Dropbox\\\\ACC Lab\\\\Nicole Lee\\\\Programs\\\\extras\"\\)\\) { \"$q : $\\(Test-Path $q\\)\" } })"
     ]
   }
 }
